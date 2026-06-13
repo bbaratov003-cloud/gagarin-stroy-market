@@ -209,7 +209,7 @@ body.dark-mode .social-link:hover {
   border-color: var(--primary);
 }
 
-/* LOADER */
+/* ========== TO'G'RILANGAN RAKETALIK LOADER ========== */
 .loader-container {
   position: fixed;
   top: 0;
@@ -222,46 +222,64 @@ body.dark-mode .social-link:hover {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  animation: fadeOut 0.5s ease-out forwards;
-  animation-delay: 0.8s;
-}
-.loader-container.dark {
-  background: linear-gradient(135deg, #0a0f1a 0%, #0f172a 100%);
-}
-@keyframes fadeOut {
-  to { opacity: 0; visibility: hidden; }
-}
-.loader {
-  width: 80px;
-  height: 80px;
-  position: relative;
-}
-.loader-rocket {
-  font-size: 3rem;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: rocketLaunch 1s ease-in-out infinite;
-}
-@keyframes rocketLaunch {
-  0%,100% { transform: translate(-50%, -50%) translateY(0); }
-  50% { transform: translate(-50%, -50%) translateY(-20px); }
-}
-.loader-container p {
-  margin-top: 30px;
-  color: white;
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-.loader-sub {
-  font-size: 0.8rem !important;
-  font-weight: 400 !important;
-  opacity: 0.7;
+  /* Sun'iy vaqtinchalik o'chib ketish animatsiyasi olib tashlandi */
 }
 
-/* CONTAINER */
+/* Dark mode yuklanish fon rangi */
+body.dark-mode .loader-container {
+  background: linear-gradient(135deg, #0a0f1a 0%, #0f172a 100%);
+}
+
+.loader-content {
+  text-align: center;
+  padding: 20px;
+}
+
+.loader-rocket {
+  font-size: 3.5rem;
+  display: block;
+  margin-bottom: 15px;
+  animation: rocketLaunch 1.5s ease-in-out infinite;
+}
+
+@keyframes rocketLaunch {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.loader-container h2 {
+  color: white;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* 🔄 YANGA QO'SHILGAN AYLANUVCHI PROGRESS BAR (SPINNER) */
+.custom-spinner {
+  width: 45px;
+  height: 45px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid var(--primary); /* Gagarin to'q sariq rangi */
+  border-radius: 50%;
+  margin: 20px auto;
+  animation: spinLoader 1s linear infinite;
+}
+
+@keyframes spinLoader {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader-sub {
+  font-size: 0.9rem !important;
+  font-weight: 400 !important;
+  color: #94a3b8;
+  opacity: 0.9;
+}
+
+/* ========== CONTAINER ========== */
 .container {
   max-width: 1280px;
   margin: 0 auto;
@@ -273,7 +291,7 @@ body.dark-mode .social-link:hover {
   padding: 32px 0;
 }
 
-/* FILTER PANEL */
+/* ========== FILTER PANEL ========== */
 .filter-panel {
   display: flex;
   justify-content: flex-end;
@@ -309,7 +327,7 @@ body.dark-mode .social-link:hover {
   border-color: var(--primary);
 }
 
-/* RESULTS INFO */
+/* ========== RESULTS INFO ========== */
 .results-info {
   margin-bottom: 28px;
   display: flex;
@@ -359,7 +377,7 @@ body.dark-mode .social-link:hover {
   color: #ef4444;
 }
 
-/* NO RESULTS */
+/* ========== NO RESULTS ========== */
 .no-results {
   text-align: center;
   padding: 80px 20px;
@@ -380,7 +398,7 @@ body.dark-mode .social-link:hover {
   color: var(--gray);
 }
 
-/* CALL TO ACTION */
+/* ========== CALL TO ACTION ========== */
 .call-to-action-section {
   margin: 48px 0 32px;
   text-align: center;
@@ -405,10 +423,10 @@ body.dark-mode .social-link:hover {
   box-shadow: 0 12px 28px rgba(255,107,0,0.4);
 }
 
-/* ========== FIXED ACTION BUTTONS – BARCHA EKRANLARDA BIR XIL VERTIKAL JOYLASHUV ========== */
+/* ========== FIXED ACTION BUTTONS ========== */
 .fixed-cart-btn {
   position: fixed;
-  bottom: 160px;      /* Desktop, tablet, mobil – hammasida bir xil */
+  bottom: 160px;
   right: 20px;
   width: 50px;
   height: 50px;
@@ -449,7 +467,7 @@ body.dark-mode .social-link:hover {
 
 .admin-trigger-btn {
   position: fixed;
-  bottom: 90px;       /* Barcha ekranlarda bir xil */
+  bottom: 90px;
   right: 20px;
   width: 50px;
   height: 50px;
@@ -473,7 +491,7 @@ body.dark-mode .social-link:hover {
 
 .scroll-top-btn {
   position: fixed;
-  bottom: 20px;       /* Barcha ekranlarda bir xil */
+  bottom: 20px;
   right: 20px;
   width: 50px;
   height: 50px;
@@ -495,7 +513,7 @@ body.dark-mode .social-link:hover {
   transform: scale(1.1) translateY(-2px);
 }
 
-/* ERROR CONTAINER */
+/* ========== ERROR CONTAINER ========== */
 .error-container {
   min-height: 100vh;
   display: flex;
@@ -515,16 +533,16 @@ body.dark-mode .social-link:hover {
   cursor: pointer;
 }
 
-/* ANIMATION */
+/* ========== ANIMATION ========== */
 @keyframes pulse {
-  0%,100% { transform: scale(1); }
+  0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
 }
 .animate-add {
   animation: pulse 0.3s ease-in-out;
 }
 
-/* ========== RESPONSIVE – FAQAT TUGMA O‘LCHAMI KICHRAYADI, JOYLASHUVI O‘ZGARMAYDI ========== */
+/* ========== RESPONSIVE ========== */
 @media (max-width: 1024px) {
   .container { padding: 0 20px; }
   .results-info h2 { font-size: 1.5rem; }
@@ -536,7 +554,6 @@ body.dark-mode .social-link:hover {
   .results-info { flex-direction: column; align-items: flex-start; }
   .callback-btn { padding: 12px 28px; font-size: 1rem; }
   
-  /* Tugmalarning o‘lchami kichrayadi, lekin joylashuvi (bottom) O‘ZGARMAYDI */
   .fixed-cart-btn, .admin-trigger-btn, .scroll-top-btn {
     width: 46px;
     height: 46px;
