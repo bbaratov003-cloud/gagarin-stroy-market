@@ -10,7 +10,8 @@ import Contact from './pages/Contact';
 import Cart from './pages/Cart';
 import './App.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+// VITE_API_URL bo'lsa o'shani oladi, yo'qsa Render yoki mahalliy url bilan ishlaydi
+const API_URL = import.meta.env.VITE_API_URL || 'https://backend-d8em.onrender.com/api'; 
 
 function App() {
   const navigate = useNavigate();
@@ -37,10 +38,9 @@ function App() {
   
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState(''); 
-  const [isLoading, setIsLoading] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Dark mode
+  // Dark mode sozlamalari
   useEffect(() => {
     localStorage.setItem('darkMode', darkMode);
     if (darkMode) document.body.classList.add('dark-mode');
@@ -77,12 +77,18 @@ function App() {
     }
   };
 
+  // 🔄 Render server uyg'onishini kutish va ma'lumotlarni yuklash mantiqi
   useEffect(() => {
     const loadData = async () => {
-      setLoading(true);
-      await Promise.all([fetchCategories(), fetchProducts()]);
-      setLoading(false);
-      setIsLoading(false);
+      try {
+        setLoading(true);
+        // Ikkala so'rov yakunlanishini kutadi (Render uyg'onguncha shu yerda turadi)
+        await Promise.all([fetchCategories(), fetchProducts()]);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false); // Server to'liq uyg'onib ma'lumot kelgach spinner o'chadi
+      }
     };
     loadData();
   }, []);
@@ -107,6 +113,7 @@ function App() {
   };
 
   const cartCount = useMemo(() => cart.reduce((s, i) => s + (i.quantity || 0), 0), [cart]);
+  
   const addToViewed = (id) => {
     if (!viewed.includes(id)) setViewed([id, ...viewed].slice(0, 12));
   };
@@ -122,13 +129,15 @@ function App() {
     return filtered;
   }, [products, activeCategory, searchQuery]);
 
+  // 🖼️ TO'G'RILANGAN RASM LINKI:
   const getImageUrl = (product) => {
-    if (!product) return null;
-    if (product.image) {
-      if (product.image.startsWith('http')) return product.image;
-      return `http://127.0.0.1:8000${product.image}`;
-    }
-    return null;
+    if (!product || !product.image) return null;
+    // Agar rasm to'liq internet linki bo'lsa (Cloudinary yoki HTTP), shundoq o'zini qaytaradi
+    if (product.image.startsWith('http')) return product.image;
+    
+    // Aks holda Render backend'dan asosiy url manzilini olib ulaydi (127.0.0.1 olib tashlandi)
+    const BASE_HOST = API_URL.replace('/api', '');
+    return `${BASE_HOST}${product.image}`;
   };
 
   const handleAdminUpdate = () => {
@@ -163,29 +172,49 @@ function App() {
             </div>
           )}
         </div>
-        {loading ? (
-          <div className="loading-spinner">Yuklanmoqda...</div>
-        ) : filteredProducts.length > 0 ? (
+        
+        {filteredProducts.length > 0 ? (
           <Recommended products={filteredProducts} addToCart={addToCart} addToViewed={addToViewed} getImageUrl={getImageUrl} />
         ) : (
           <div className="no-results"><span>🔍</span><h3>Mahsulot topilmadi</h3><p>Boshqa kategoriya yoki qidiruv so‘zini tanlang</p></div>
         )}
+        
         <div className="call-to-action-section">
           <button className="callback-btn" onClick={() => navigate('/contact')}>📞 Qo‘ng‘iroq buyurtma qilish</button>
         </div>
       </main>
       <Footer darkMode={darkMode} />
-
-      {/* ========== UCHTA PASTKI TUGMA (BARCHA EKRANLARDA BIR XIL VERTIKAL TARTIB) ========== */}
      
       <button className="admin-trigger-btn" onClick={() => setShowAdmin(true)}>🔧</button>
       {showScrollTop && <button className="scroll-top-btn" onClick={scrollToTop}>↑</button>}
     </div>
   );
 
+  // 🔧 Admin oynasiga o'tish
   if (showAdmin) return <AdminPanel onBack={handleBackFromAdmin} onUpdate={handleAdminUpdate} />;
-  if (isLoading || loading) return <div className="loader-container"><div className="loader-rocket">🚀</div><p>GAGARIN STROY MARKET</p><p className="loader-sub">Sifatga yo‘naltirilgan!</p></div>;
-  if (error) return <div className="error-container"><h2>⚠️ Xatolik</h2><p>{error}</p><button onClick={() => window.location.reload()}>Qayta yuklash</button></div>;
+  
+  // 🔄 RENDER UXLAB YOTGANDA CHIKADIGAN AYLANUVCHI RAKETALIK LOADER OYNASI
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <div className="loader-content">
+          <div className="loader-rocket">🚀</div>
+          <h2>GAGARIN STROY MARKET</h2>
+          <div className="custom-spinner"></div> {/* Chiroyli aylanuvchi progress bar */}
+          <p className="loader-sub">Do'kon yuklanmoqda, iltimos kuting...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // ⚠️ Xatolik oynasi
+  if (error) return (
+    <div className="error-container">
+      <h2>⚠️ Xatolik yuz berdi</h2>
+      <p>{error}</p>
+      <button onClick={() => window.location.reload()}>Qayta urinish</button>
+    </div>
+  );
 
   return (
     <Routes>
